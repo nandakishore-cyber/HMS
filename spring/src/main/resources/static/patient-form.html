@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Patient form | HMS</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 700px; padding: 0 1rem; }
+        form { display: grid; gap: .75rem; grid-template-columns: 1fr 1fr; }
+        label { display: grid; gap: .25rem; } textarea, input, select { font: inherit; padding: .45rem; }
+        textarea, button { grid-column: 1 / -1; } button { padding: .6rem; }
+    </style>
+</head>
+<body>
+<a href="patients.html">← Patients</a><h1 id="title">Register patient</h1>
+<form id="form">
+    <label>Full name <input name="fullName" required maxlength="160"></label>
+    <label>Date of birth <input name="dateOfBirth" type="date" required></label>
+    <label>Gender <input name="gender" required maxlength="20"></label>
+    <label>Blood group <input name="bloodGroup" maxlength="10"></label>
+    <label>Phone <input name="phone" required maxlength="30"></label>
+    <label>Email <input name="email" type="email" required maxlength="255"></label>
+    <label>Emergency contact <input name="emergencyContact" required maxlength="255"></label>
+    <label>Address <textarea name="address" required maxlength="500"></textarea></label>
+    <button type="submit">Save patient</button>
+</form>
+<p id="message"></p>
+<script>
+    const id = new URLSearchParams(location.search).get('id');
+    const form = document.getElementById('form');
+    if (id) {
+        title.textContent = 'Update patient';
+        fetch('/api/v1/patients/' + id).then(r => r.json()).then(patient => {
+            for (const [key, value] of Object.entries(patient)) {
+                if (form.elements[key]) form.elements[key].value = value ?? '';
+            }
+        });
+    }
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form));
+        const response = await fetch('/api/v1/patients' + (id ? '/' + id : ''), {
+            method: id ? 'PUT' : 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if (response.ok) location.href = 'patients.html';
+        else message.textContent = (await response.json()).message || 'Unable to save patient';
+    });
+</script>
+</body>
+</html>

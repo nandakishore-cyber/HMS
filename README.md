@@ -29,3 +29,20 @@ mvn spring-boot:run
 
 The backend uses Spring Web, Spring Data JPA, Hibernate, Lombok, and the
 PostgreSQL JDBC driver.
+
+## Patient management
+
+Patient management is available under `/api/v1/patients`:
+
+- `POST /api/v1/patients` registers a patient.
+- `GET /api/v1/patients?query=&status=` searches and lists patients.
+- `GET` and `PUT /api/v1/patients/{patientId}` view and update a patient.
+- `PATCH /api/v1/patients/{patientId}/status` changes patient status.
+- `DELETE /api/v1/patients/{patientId}` archives a patient.
+- `GET /api/v1/patients/{patientId}/appointment-history` views appointments.
+- `GET /api/v1/patients/{patientId}/medical-history` views medical records.
+- `GET /api/v1/patients/{patientId}/billing-history` views bills from the billing module.
+
+The JPA schema creates `patients`, `appointment_history`, and
+`medical_history` tables in PostgreSQL. Basic browser pages are available at
+`/patients.html`, `/patient-form.html`, and `/patient-details.html`.

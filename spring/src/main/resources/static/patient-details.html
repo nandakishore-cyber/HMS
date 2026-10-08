@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Patient details | HMS</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 850px; padding: 0 1rem; }
+        dt { font-weight: 700; } dd { margin: 0 0 .7rem; }
+        section { border-top: 1px solid #ddd; margin-top: 1.5rem; padding-top: 1rem; }
+        table { border-collapse: collapse; width: 100%; } td, th { border-bottom: 1px solid #ddd; padding: .5rem; text-align: left; }
+    </style>
+</head>
+<body>
+<a href="patients.html">← Patients</a><h1 id="name">Patient</h1>
+<p><a id="edit">Edit patient</a> | <button id="archive">Archive patient</button></p>
+<dl id="details"></dl>
+<section><h2>Appointment history</h2><div id="appointments">Loading...</div></section>
+<section><h2>Medical history</h2><div id="medical">Loading...</div></section>
+<section><h2>Billing history</h2><div id="billing">Loading...</div></section>
+<script>
+    const id = new URLSearchParams(location.search).get('id');
+    const endpoint = '/api/v1/patients/' + id;
+    const fields = ['patientId','dateOfBirth','age','gender','bloodGroup','phone','email','address',
+        'emergencyContact','registrationDate','status'];
+    async function load() {
+        const patient = await (await fetch(endpoint)).json();
+        name.textContent = patient.fullName;
+        details.innerHTML = fields.map(key => `<dt>${key}</dt><dd>${patient[key] ?? '-'}</dd>`).join('');
+        edit.href = 'patient-form.html?id=' + id;
+        renderList('appointments', await fetch(endpoint + '/appointment-history'));
+        renderList('medical', await fetch(endpoint + '/medical-history'));
+        const billingResponse = await fetch(endpoint + '/billing-history?size=50');
+        renderList('billing', billingResponse);
+    }
+    async function renderList(element, response) {
+        const data = await response.json();
+        const rows = data.content || data;
+        document.getElementById(element).innerHTML = rows.length
+            ? '<pre>' + escapeHtml(JSON.stringify(rows, null, 2)) + '</pre>' : 'No records';
+    }
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+    archive.onclick = async () => {
+        if (confirm('Archive this patient?')) {
+            await fetch(endpoint, {method: 'DELETE'});
+            location.href = 'patients.html';
+        }
+    };
+    load();
+</script>
+</body>
+</html>

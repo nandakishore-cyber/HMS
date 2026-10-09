@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice(basePackages = "com.example.hms.patientManagement")
-public class GlobalExceptionHandler {
+public class PatientGlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     ResponseEntity<ErrorResponse> notFound(ResourceNotFoundException exception) {
         return response(HttpStatus.NOT_FOUND, exception.getMessage());

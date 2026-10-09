@@ -10,20 +10,21 @@ The `spring` folder contains the Spring Boot backend for the HMS project.
 
 ## Run locally
 
-Create a PostgreSQL database named `hms`, then start the application:
+Create a PostgreSQL database named `Dyn_Pri_DB`, then start the application:
 
 ```bash
 cd spring
 mvn spring-boot:run
 ```
 
-The default database settings target `localhost:5432` with the `postgres` user
-and password. Override them with environment variables when needed:
+The default database settings target `localhost:5432/Dyn_Pri_DB` with the
+`postgres` user and `postgres` password. Override them with environment
+variables when needed:
 
 ```bash
-DB_URL=jdbc:postgresql://localhost:5432/hms \
+DB_URL=jdbc:postgresql://localhost:5432/Dyn_Pri_DB \
 DB_USERNAME=postgres \
-DB_PASSWORD=secret \
+DB_PASSWORD=your-password \
 mvn spring-boot:run
 ```
 

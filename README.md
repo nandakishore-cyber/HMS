@@ -42,8 +42,8 @@ Patient management is available under `/api/v1/patients`:
 - `DELETE /api/v1/patients/{patientId}` archives a patient.
 - `GET /api/v1/patients/{patientId}/appointment-history` views appointments.
 - `GET /api/v1/patients/{patientId}/medical-history` views medical records.
-- `GET /api/v1/patients/{patientId}/billing-history` views bills from the billing module.
+- `GET /api/v1/patients/{patientId}/billing-history` views the patient's billing records.
 
-The JPA schema creates `patients`, `appointment_history`, and
-`medical_history` tables in PostgreSQL. Basic browser pages are available at
+The JPA schema creates `patients`, `appointment_history`, `medical_history`,
+and `billing_history` tables in PostgreSQL. Basic browser pages are available at
 `/patients.html`, `/patient-form.html`, and `/patient-details.html`.

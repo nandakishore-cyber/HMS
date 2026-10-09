@@ -1,6 +1,5 @@
 package com.example.hms.patientManagement.service;
 
-import com.example.hms.billingPaymentManagement.repository.BillRepository;
 import com.example.hms.patientManagement.dto.*;
 import com.example.hms.patientManagement.entity.*;
 import com.example.hms.patientManagement.exception.*;
@@ -19,7 +18,7 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final AppointmentHistoryRepository appointmentHistoryRepository;
     private final MedicalHistoryRepository medicalHistoryRepository;
-    private final BillRepository billRepository;
+    private final BillingHistoryRepository billingHistoryRepository;
 
     public PatientResponse create(PatientCreateRequest request) {
         if (patientRepository.existsByEmailIgnoreCase(request.email())) {
@@ -82,7 +81,7 @@ public class PatientService {
     @Transactional(readOnly = true)
     public Page<BillingHistoryResponse> billingHistory(UUID patientId, Pageable pageable) {
         ensurePatientExists(patientId);
-        return billRepository.findByPatientId(patientId, pageable).map(BillingHistoryResponse::from);
+        return billingHistoryRepository.findByPatientId(patientId, pageable).map(BillingHistoryResponse::from);
     }
 
     private Patient findPatient(UUID patientId) {

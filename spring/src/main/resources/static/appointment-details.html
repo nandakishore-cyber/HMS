@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Appointment details | HMS</title></head>
+<body>
+<a href="appointments.html">← Appointments</a><h1>Appointment details</h1><pre id="details">Loading...</pre>
+<button onclick="changeStatus('CONFIRMED')">Confirm</button>
+<button onclick="changeStatus('IN_PROGRESS')">Start</button>
+<button onclick="changeStatus('COMPLETED')">Complete</button>
+<button onclick="changeStatus('CANCELLED')">Cancel</button>
+<script>
+const id = new URLSearchParams(location.search).get('id');
+async function load() { details.textContent = JSON.stringify(await (await fetch('/api/v1/appointments/' + id)).json(), null, 2); }
+async function changeStatus(status) {
+    const response = await fetch('/api/v1/appointments/' + id + '/status', {
+        method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({status})
+    });
+    if (!response.ok) alert((await response.json()).message || 'Unable to change status'); else load();
+}
+load();
+</script>
+</body>
+</html>

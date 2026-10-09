@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create appointment | HMS</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 700px; padding: 0 1rem; }
+        form { display: grid; gap: .75rem; } label { display: grid; gap: .25rem; }
+        input, textarea, button { font: inherit; padding: .5rem; }
+    </style>
+</head>
+<body>
+<a href="appointments.html">← Appointments</a><h1>Create appointment</h1>
+<form id="form">
+    <label>Patient ID <input id="patientId" name="patientId" required></label>
+    <label>Department ID <input name="departmentId" required></label>
+    <label>Doctor ID <input name="doctorId" required></label>
+    <label>Start time <input name="startTime" type="datetime-local" required></label>
+    <label>End time <input name="endTime" type="datetime-local" required></label>
+    <label>Reason <input name="reason" maxlength="500" required></label>
+    <label>Notes <textarea name="notes" maxlength="1000"></textarea></label>
+    <button>Book appointment</button>
+</form>
+<p id="message"></p>
+<script>
+patientId.value = new URLSearchParams(location.search).get('patientId') || '';
+form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    const response = await fetch('/api/v1/appointments', {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
+    });
+    if (response.ok) location.href = 'appointments.html';
+    else message.textContent = (await response.json()).message || 'Unable to create appointment';
+});
+</script>
+</body>
+</html>

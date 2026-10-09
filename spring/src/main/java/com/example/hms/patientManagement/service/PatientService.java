@@ -1,5 +1,6 @@
 package com.example.hms.patientManagement.service;
 
+import com.example.hms.appointmentManagement.repository.AppointmentRepository;
 import com.example.hms.patientManagement.dto.*;
 import com.example.hms.patientManagement.entity.*;
 import com.example.hms.patientManagement.exception.*;
@@ -16,7 +17,7 @@ import java.util.*;
 @Transactional
 public class PatientService {
     private final PatientRepository patientRepository;
-    private final AppointmentHistoryRepository appointmentHistoryRepository;
+    private final AppointmentRepository appointmentRepository;
     private final MedicalHistoryRepository medicalHistoryRepository;
     private final BillingHistoryRepository billingHistoryRepository;
 
@@ -67,7 +68,7 @@ public class PatientService {
     @Transactional(readOnly = true)
     public List<AppointmentHistoryResponse> appointmentHistory(UUID patientId) {
         ensurePatientExists(patientId);
-        return appointmentHistoryRepository.findByPatientIdOrderByAppointmentDateDesc(patientId)
+        return appointmentRepository.findByPatientIdOrderByStartTimeDesc(patientId)
                 .stream().map(AppointmentHistoryResponse::from).toList();
     }
 

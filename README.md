@@ -44,6 +44,17 @@ Patient management is available under `/api/v1/patients`:
 - `GET /api/v1/patients/{patientId}/medical-history` views medical records.
 - `GET /api/v1/patients/{patientId}/billing-history` views the patient's billing records.
 
-The JPA schema creates `patients`, `appointment_history`, `medical_history`,
-and `billing_history` tables in PostgreSQL. Basic browser pages are available at
+The JPA schema creates `patients`, `medical_history`, and `billing_history`
+tables in PostgreSQL. Appointment history is read from the appointment module's
+`appointments` table. Basic browser pages are available at
 `/patients.html`, `/patient-form.html`, and `/patient-details.html`.
+
+## Appointment management
+
+Appointment management is available under `/api/v1/appointments`. It supports
+creation, search by patient/doctor/status/time range, rescheduling, status
+transitions, cancellation, doctor schedules, and availability slots. The JPA
+schema creates `appointments` and `doctor_schedules`; patient and doctor IDs
+are integration identifiers so this branch remains independently deployable.
+Basic API pages are available at `/appointments.html`,
+`/appointment-form.html`, and `/appointment-details.html`.

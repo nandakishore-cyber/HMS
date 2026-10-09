@@ -13,7 +13,8 @@
 </head>
 <body>
 <a href="patients.html">← Patients</a><h1 id="name">Patient</h1>
-<p><a id="edit">Edit patient</a> | <button id="archive">Archive patient</button></p>
+<p><a id="edit">Edit patient</a> | <a id="book">Book appointment</a> |
+    <button id="archive">Archive patient</button></p>
 <dl id="details"></dl>
 <section><h2>Appointment history</h2><div id="appointments">Loading...</div></section>
 <section><h2>Medical history</h2><div id="medical">Loading...</div></section>
@@ -28,6 +29,7 @@
         name.textContent = patient.fullName;
         details.innerHTML = fields.map(key => `<dt>${key}</dt><dd>${patient[key] ?? '-'}</dd>`).join('');
         edit.href = 'patient-form.html?id=' + id;
+        book.href = 'appointment-form.html?patientId=' + id;
         renderList('appointments', await fetch(endpoint + '/appointment-history'));
         renderList('medical', await fetch(endpoint + '/medical-history'));
         const billingResponse = await fetch(endpoint + '/billing-history?size=50');

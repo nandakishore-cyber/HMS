@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Appointments | HMS</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 1100px; padding: 0 1rem; }
+        table { border-collapse: collapse; margin-top: 1rem; width: 100%; }
+        td, th { border-bottom: 1px solid #ddd; padding: .6rem; text-align: left; }
+        input, select, button { font: inherit; padding: .4rem; }
+        .toolbar { display: flex; flex-wrap: wrap; gap: .5rem; }
+    </style>
+</head>
+<body>
+<h1>Appointments</h1>
+<p><a href="appointment-form.html">Create appointment</a> | <a href="patients.html">Patients</a></p>
+<div class="toolbar">
+    <input id="patientId" placeholder="Patient UUID">
+    <input id="doctorId" placeholder="Doctor UUID">
+    <select id="status"><option value="">All statuses</option>
+        <option>SCHEDULED</option><option>CONFIRMED</option><option>IN_PROGRESS</option>
+        <option>COMPLETED</option><option>CANCELLED</option></select>
+    <button onclick="loadAppointments()">Search</button>
+</div>
+<table><thead><tr><th>Start</th><th>Patient</th><th>Doctor</th><th>Status</th><th>Reason</th></tr></thead>
+<tbody id="rows"></tbody></table>
+<script>
+async function loadAppointments() {
+    const params = new URLSearchParams({size: 100});
+    if (patientId.value) params.set('patientId', patientId.value);
+    if (doctorId.value) params.set('doctorId', doctorId.value);
+    if (status.value) params.set('status', status.value);
+    const response = await fetch('/api/v1/appointments?' + params);
+    if (!response.ok) return alert('Unable to load appointments');
+    const page = await response.json();
+    rows.innerHTML = page.content.map(a => `<tr><td>${a.startTime}</td><td>${a.patientId}</td>
+        <td>${a.doctorId}</td><td>${a.status}</td><td>${escapeHtml(a.reason)}</td></tr>`).join('');
+}
+function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+loadAppointments();
+</script>
+</body>
+</html>

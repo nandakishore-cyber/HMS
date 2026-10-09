@@ -4,7 +4,6 @@ import com.example.hms.appointmentManagement.dto.*;
 import com.example.hms.appointmentManagement.entity.*;
 import com.example.hms.appointmentManagement.exception.*;
 import com.example.hms.appointmentManagement.repository.*;
-import com.example.hms.patientManagement.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -19,11 +18,9 @@ import java.util.*;
 public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final DoctorScheduleRepository scheduleRepository;
-    private final PatientRepository patientRepository;
 
     public AppointmentResponse create(AppointmentCreateRequest request) {
         ensureValidWindow(request.startTime(), request.endTime());
-        ensurePatient(request.patientId());
         ensureAvailable(request.doctorId(), request.startTime(), request.endTime(), null);
         Appointment appointment = new Appointment();
         appointment.setPatientId(request.patientId());
@@ -114,12 +111,6 @@ public class AppointmentService {
     private Appointment find(UUID id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found: " + id));
-    }
-
-    private void ensurePatient(UUID patientId) {
-        if (!patientRepository.existsById(patientId)) {
-            throw new ResourceNotFoundException("Patient not found: " + patientId);
-        }
     }
 
     private void ensureAvailable(UUID doctorId, LocalDateTime start, LocalDateTime end, UUID appointmentId) {
